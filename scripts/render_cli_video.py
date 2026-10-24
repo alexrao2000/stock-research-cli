@@ -114,7 +114,6 @@ def main() -> int:
             "DATA MODE : SYNTHETIC DEMO — fictional companies and metrics",
             "TRADING   : DISABLED — no broker connection or order execution",
             "AI BRIEF  : optional; requested explicitly with --ai-brief",
-            "The voice in this walkthrough is AI-generated.",
         ]),
         ("PORTFOLIO + WATCHLIST", extract(output, "PORTFOLIO", "POPULAR / EMERGING-GROWTH SCREEN")),
         ("SCREENING + REVIEW FLAGS", extract(output, "POPULAR / EMERGING-GROWTH SCREEN", "AI RESEARCH BRIEF (OpenAI; supplied data only)")),
