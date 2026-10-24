@@ -12,6 +12,12 @@ python3 web_app.py
 
 Then open `http://127.0.0.1:8765` in a browser. The page starts with clearly labeled fictional sample data. Use **Load your CSVs** to analyze portfolio, watchlist, and snapshot files locally. The server binds only to `127.0.0.1`; it does not expose a public service. Press Ctrl+C to stop it.
 
+### Optional OpenAI research brief
+
+The dashboard includes **Generate AI brief**. It sends the displayed research summary to OpenAI only after you click the button. The summary can include ticker symbols, shares, average costs, snapshot prices and metrics, and rule-based review flags. The API key stays on the Python server and is never sent to the browser. API use may incur charges. The brief uses only the supplied snapshot, does not fetch live market data, and is not a buy/sell recommendation.
+
+Set `OPENAI_API_KEY` in the project `.env` file. `.env` is excluded from Git. Optionally set `OPENAI_MODEL`; the default is `gpt-5.5`. Restart `web_app.py` after changing `.env`. Without a key, the rest of the dashboard continues to work and the brief displays a setup error.
+
 ## Run the synthetic demo
 
 ```sh
