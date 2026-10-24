@@ -83,9 +83,10 @@ def make_slide(title: str, lines: list[str], command: str, outfile: Path) -> Non
         draw.text((52, y + 2), "…continued in the next view", fill=MUTED, font=FONT_SMALL)
     draw.line((48, HEIGHT - 48, WIDTH - 48, HEIGHT - 48), fill=LINE, width=1)
     draw.text((48, HEIGHT - 36), "NORTHSTAR   ·   DEMO DATA IS FICTIONAL", fill=MUTED, font=FONT_SMALL)
-    disclosure = "AI-GENERATED VOICE"
-    bbox = draw.textbbox((0, 0), disclosure, font=FONT_SMALL)
-    draw.text((WIDTH - 48 - (bbox[2] - bbox[0]), HEIGHT - 36), disclosure, fill=AMBER, font=FONT_SMALL)
+    if title == "RESEARCH SCOPE":
+        disclosure = "VOICE: AI-GENERATED"
+        bbox = draw.textbbox((0, 0), disclosure, font=FONT_SMALL)
+        draw.text((WIDTH - 48 - (bbox[2] - bbox[0]), HEIGHT - 36), disclosure, fill=AMBER, font=FONT_SMALL)
     image.save(outfile)
 
 
