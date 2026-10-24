@@ -116,34 +116,3 @@ def generate_brief(research: dict[str, Any], root: Path) -> str:
     if not brief:
         raise RuntimeError("OpenAI returned no text. Please retry.")
     return brief
-
-
-def generate_speech(text: str, output_path: Path, root: Path, voice: str = "marin") -> None:
-    """Generate an MP3 narration with the OpenAI Speech API."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    request = urllib.request.Request(
-        "https://api.openai.com/v1/audio/speech",
-        data=json.dumps({
-            "model": "gpt-4o-mini-tts",
-            "voice": voice,
-            "input": text,
-            "instructions": "Speak naturally and clearly in a warm, professional conversational voice. Moderate pace, varied but restrained intonation. Articulate financial terms carefully. Do not sound like a radio announcer.",
-            "response_format": "mp3",
-        }, ensure_ascii=False).encode("utf-8"),
-        headers={"Authorization": f"Bearer {_api_key(root)}", "Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=60, context=_ssl_context()) as response:
-            audio = response.read()
-    except urllib.error.HTTPError as exc:
-        if exc.code in (401, 403):
-            raise RuntimeError("OpenAI rejected the API key or project permissions. Check .env.") from None
-        if exc.code == 429:
-            raise RuntimeError("OpenAI rate limit or billing quota reached.") from None
-        raise RuntimeError(f"OpenAI speech request failed (HTTP {exc.code}).") from None
-    except (urllib.error.URLError, TimeoutError):
-        raise RuntimeError("Could not reach OpenAI Speech. Check the connection and retry.") from None
-    if not audio:
-        raise RuntimeError("OpenAI returned an empty audio file.")
-    output_path.write_bytes(audio)

@@ -38,7 +38,7 @@ Use `--ai-brief` to request a second-pass explanation of supplied data:
 
 For CSVs, add `--ai-brief` to the normal `--portfolio`, `--watchlist`, and `--snapshot` command. This explicitly sends a compact summary of holdings, share counts, average costs, watchlist notes, snapshot metrics, and rule-based flags to OpenAI. The API key stays local in `.env`; normal CLI runs do not call OpenAI. The brief does not fetch live data or give buy/sell instructions. API usage may incur charges.
 
-The updated [CLI AI demo video](media/Stock-Research-CLI-AI-Demo.mp4) uses fictional data and a disclosed AI-generated voice.
+Demo video: [Stock-Research-CLI-AI-Demo-v2.mp4](media/Stock-Research-CLI-AI-Demo-v2.mp4).
 
 ## Run with your CSVs
 
@@ -62,9 +62,3 @@ Sample input files are in `examples/`. Provide a trustworthy source and matching
 
 Thresholds are visible in the program and are screening heuristics. They do not account for taxes, cash needs, risk tolerance, or full valuation analysis. “BUY REVIEW” and “SELL REVIEW” mean investigate the inputs; they do not mean place an order.
 
-## Demo videos
-
-- `media/Stock-Research-CLI-AI-Demo.mp4` is the updated terminal walkthrough. It uses fictional company data and clearly labels its AI-generated narration.
-- `media/Stock-Research-Demo.mp4` is the earlier walkthrough.
-
-To regenerate the new video, use the `.venv` setup above, run `scripts/render_openai_narration.py`, capture the output of `stock_research_cli.py --demo --ai-brief`, then pass that transcript to `scripts/render_cli_video.py`. Audio generation and the AI brief require internet access and may incur API charges; `ffmpeg` is needed to render the MP4.
