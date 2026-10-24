@@ -10,6 +10,8 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Optional
 
+from openai_features import generate_brief
+
 TICKER_CHARS = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-")
 
 @dataclass
@@ -339,12 +341,85 @@ def demo_paths() -> tuple[Path, Path, Path]:
     return base / "portfolio.csv", base / "watchlist.csv", base / "snapshot_demo.csv"
 
 
+def ai_research_summary(
+    positions: dict[str, Position],
+    watchlist: dict[str, str],
+    snapshots: dict[str, Snapshot],
+    warnings: list[str],
+    demo: bool,
+) -> dict[str, object]:
+    """Build the compact summary sent only when --ai-brief is requested."""
+    values: list[Optional[float]] = []
+    rows: list[dict[str, object]] = []
+    total = 0.0
+    for position in positions.values():
+        snapshot = snapshots.get(position.ticker)
+        value = position.shares * snapshot.price if snapshot and snapshot.price is not None else None
+        pnl = ((snapshot.price - position.average_cost) * position.shares
+               if snapshot and snapshot.price is not None and position.average_cost is not None else None)
+        values.append(value)
+        if value is not None:
+            total += value
+        rows.append({
+            "ticker": position.ticker,
+            "shares": position.shares,
+            "averageCost": position.average_cost,
+            "price": snapshot.price if snapshot else None,
+            "value": value,
+            "pnl": pnl,
+        })
+    if rows and all(value is not None for value in values) and total > 0:
+        for row in rows:
+            row["weight"] = row["value"] / total * 100 if row["value"] is not None else None
+
+    emerging, established = screen_candidates(snapshots)
+    reviews = []
+    for ticker in dict.fromkeys([*positions, *watchlist]):
+        status, reason = review_signal(snapshots.get(ticker))
+        reviews.append({"ticker": ticker, "status": status, "reason": reason})
+    sources = sorted({snapshot.source for snapshot in snapshots.values()})
+    dates = sorted({snapshot.as_of for snapshot in snapshots.values()})
+    return {
+        "asOf": "; ".join(dates) if dates else ("DEMO" if demo else "—"),
+        "source": "; ".join(sources) if sources else ("Synthetic demo snapshot" if demo else "—"),
+        "sourceLabel": "SYNTHETIC DEMO DATA — fictional companies and metrics" if demo else "USER-SUPPLIED SNAPSHOT — verify source and date",
+        "totalValue": total,
+        "positions": rows,
+        "watchlist": [{
+            "ticker": ticker,
+            "note": note,
+            "price": snapshots[ticker].price if ticker in snapshots else None,
+        } for ticker, note in watchlist.items()],
+        "emerging": [{
+            "ticker": snapshot.ticker,
+            "name": snapshot.name,
+            "score": score,
+            "revenueGrowth": snapshot.revenue_growth_pct,
+            "volatility": snapshot.volatility_90d_pct,
+            "highVolatility": snapshot.volatility_90d_pct is not None and snapshot.volatility_90d_pct >= 45,
+        } for snapshot, score in emerging[:5]],
+        "established": [{
+            "ticker": snapshot.ticker,
+            "name": snapshot.name,
+            "volatility": snapshot.volatility_90d_pct,
+            "fcfYield": snapshot.fcf_yield_pct,
+            "debtEbitda": snapshot.net_debt_ebitda,
+        } for snapshot in established[:5]],
+        "reviews": reviews,
+        "warnings": warnings[:12],
+    }
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Read-only stock research from user-supplied CSVs; no live feed or brokerage integration.")
     parser.add_argument("--portfolio", type=Path, help="CSV: ticker,shares,average_cost")
     parser.add_argument("--watchlist", type=Path, help="CSV: ticker,notes")
     parser.add_argument("--snapshot", type=Path, help="timestamped CSV with user-supplied prices and metrics")
     parser.add_argument("--demo", action="store_true", help="run a fictional offline sample with synthetic data")
+    parser.add_argument(
+        "--ai-brief", action="store_true",
+        help="send the supplied research summary to OpenAI for an optional AI brief (requires OPENAI_API_KEY)",
+    )
     args = parser.parse_args(argv)
     if args.demo and any([args.portfolio, args.watchlist, args.snapshot]):
         parser.error("--demo cannot be combined with file arguments")
@@ -356,7 +431,16 @@ def main(argv: Optional[list[str]] = None) -> int:
         snapshots, s_warnings = load_snapshot(args.snapshot)
         if not (args.portfolio or args.watchlist or args.snapshot):
             parser.error("provide --demo or at least one CSV input")
-        report(positions, watchlist, snapshots, p_warnings + w_warnings + s_warnings, args.demo)
+        warnings = p_warnings + w_warnings + s_warnings
+        report(positions, watchlist, snapshots, warnings, args.demo)
+        if args.ai_brief:
+            print("\nAI RESEARCH BRIEF (OpenAI; supplied data only)")
+            print("This sends the displayed research summary to OpenAI; no live prices are fetched.")
+            summary = ai_research_summary(positions, watchlist, snapshots, warnings, args.demo)
+            print(generate_brief(summary, Path(__file__).resolve().parent))
+    except RuntimeError as exc:
+        print(f"stock-research: AI brief error: {exc}", file=sys.stderr)
+        return 3
     except (OSError, ValueError, csv.Error) as exc:
         print(f"stock-research: error: {exc}", file=sys.stderr)
         return 2

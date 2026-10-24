@@ -1,0 +1,9 @@
+This is an AI-narrated walkthrough of Stock Research CLI, a read-only stock research tool. The company names and numbers in this demo are fictional.
+
+The CLI calculates portfolio value and gain or loss from the share counts, cost basis, and snapshot prices you provide. It also checks your watchlist. There is no broker connection and no order execution.
+
+The emerging-growth and established-company screens show their rules. Buy review and sell review labels are prompts to inspect the data, not trading instructions.
+
+The optional AI brief runs only with the AI brief flag. It sends a compact summary of the supplied data to OpenAI to explain patterns and missing fields. Without that flag, the regular CLI stays offline. It does not fetch live market prices.
+
+Before relying on any result, verify the snapshot source, date, and assumptions. This demo is informational research, not personalized financial advice.

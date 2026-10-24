@@ -4,7 +4,7 @@ A headless, read-only command-line program for reviewing a portfolio and watchli
 
 ## Browser dashboard
 
-One-time setup for the dashboard (the CLI itself still uses only the Python standard library):
+One-time setup for the dashboard and optional AI features (the standard CLI analysis remains offline):
 
 ```sh
 cd /Users/alexr/stock-research-cli
@@ -28,6 +28,18 @@ python3 stock_research_cli.py --demo
 
 The demo companies and every metric are fictional. The resulting `BUY REVIEW` and `SELL REVIEW` labels illustrate transparent rules; they are not real recommendations.
 
+### Optional CLI AI brief
+
+Use `--ai-brief` to request a second-pass explanation of supplied data:
+
+```sh
+.venv/bin/python stock_research_cli.py --demo --ai-brief
+```
+
+For CSVs, add `--ai-brief` to the normal `--portfolio`, `--watchlist`, and `--snapshot` command. This explicitly sends a compact summary of holdings, share counts, average costs, watchlist notes, snapshot metrics, and rule-based flags to OpenAI. The API key stays local in `.env`; normal CLI runs do not call OpenAI. The brief does not fetch live data or give buy/sell instructions. API usage may incur charges.
+
+The updated [CLI AI demo video](media/Stock-Research-CLI-AI-Demo.mp4) uses fictional data and a disclosed AI-generated voice.
+
 ## Run with your CSVs
 
 ```sh
@@ -50,13 +62,9 @@ Sample input files are in `examples/`. Provide a trustworthy source and matching
 
 Thresholds are visible in the program and are screening heuristics. They do not account for taxes, cash needs, risk tolerance, or full valuation analysis. “BUY REVIEW” and “SELL REVIEW” mean investigate the inputs; they do not mean place an order.
 
-## Voice demo
+## Demo videos
 
-`media/Stock-Research-Demo.mp4` contains neural narration. The WAV scene clips are also included. To regenerate them, install `requirements-voice.txt` and run:
+- `media/Stock-Research-CLI-AI-Demo.mp4` is the updated terminal walkthrough. It uses fictional company data and clearly labels its AI-generated narration.
+- `media/Stock-Research-Demo.mp4` is the earlier walkthrough.
 
-```sh
-python3 -m pip install -r requirements-voice.txt
-python3 scripts/render_narration.py
-```
-
-This step requires internet access and `ffmpeg`. It uses the community `edge-tts` client with the `en-US-AndrewMultilingualNeural` voice; the CLI itself remains fully local and has no network dependency. The voice service and client are external and can change availability.
+To regenerate the new video, use the `.venv` setup above, run `scripts/render_openai_narration.py`, capture the output of `stock_research_cli.py --demo --ai-brief`, then pass that transcript to `scripts/render_cli_video.py`. Audio generation and the AI brief require internet access and may incur API charges; `ffmpeg` is needed to render the MP4.

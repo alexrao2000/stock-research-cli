@@ -5,3 +5,4 @@ __pycache__/
 .env
 .env.*
 !.env.example
+media/cli-ai-narration.mp3

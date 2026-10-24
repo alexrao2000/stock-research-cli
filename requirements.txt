@@ -1,1 +1,2 @@
 certifi>=2024.2.2
+Pillow>=11.0

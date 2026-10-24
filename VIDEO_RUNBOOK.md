@@ -14,7 +14,26 @@ python3 -m venv .venv
 
 Confirm that `.env` contains `OPENAI_API_KEY` without opening or showing the file during the recording. The key is ignored by Git. The AI brief needs an internet connection and may use paid OpenAI API credits.
 
-## Record the walkthrough
+## Live CLI recording
+
+1. Press **Shift + Command + 5**, choose the Terminal window or screen area, select your microphone in **Options**, then start recording.
+2. In Terminal, run these commands in order:
+
+   ```sh
+   cd /Users/alexr/stock-research-cli
+   .venv/bin/python stock_research_cli.py --demo --ai-brief
+   ```
+
+3. Let the command finish while recording. It makes one AI request using fictional demo data. Do not open or show `.env`.
+4. Use this short narration while the output appears:
+
+   > “This is Stock Research CLI, a read-only stock research tool. These companies and numbers are fictional. The portfolio and watchlist are reviewed against the supplied snapshot; the screens show their rules, and the buy-review and sell-review labels are prompts to verify evidence. With the optional AI brief flag, a summary of the supplied data is sent to OpenAI for an explanation. It does not fetch live prices or place trades.”
+
+5. Scroll to the AI brief and point out the snapshot context, concentration, risks, and questions it raises. Stop recording when the brief finishes.
+
+For another run without an AI request, use `.venv/bin/python stock_research_cli.py --demo`.
+
+## Browser dashboard walkthrough (optional)
 
 1. Press **Shift + Command + 5**. Choose to record the browser window or selected screen area. Under **Options**, select the microphone you want. Start recording.
 2. Open Terminal and run these commands in order:
