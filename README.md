@@ -2,6 +2,16 @@
 
 A headless, read-only command-line program for reviewing a portfolio and watchlist against a dated market snapshot supplied by the user. It has no network feed, broker connection, or trade execution. It never fills missing data with guesses.
 
+## Browser dashboard
+
+Launch the local dashboard with the Python standard library:
+
+```sh
+python3 web_app.py
+```
+
+Then open `http://127.0.0.1:8765` in a browser. The page starts with clearly labeled fictional sample data. Use **Load your CSVs** to analyze portfolio, watchlist, and snapshot files locally. The server binds only to `127.0.0.1`; it does not expose a public service. Press Ctrl+C to stop it.
+
 ## Run the synthetic demo
 
 ```sh
