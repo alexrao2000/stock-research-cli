@@ -1,0 +1,5 @@
+ticker,name,price,change_20d_pct,relative_volume,revenue_growth_pct,fcf_yield_pct,net_debt_ebitda,volatility_90d_pct,market_cap_usd,upside_estimate_pct,thesis_risk,source,as_of
+SIMX,Apex Robotics,52.40,10.8,1.8,28,1.1,1.4,43,3200000000,24,false,Synthetic demo snapshot,DEMO
+SIMS,Cedar Systems,74.30,2.1,1.0,7,4.6,0.6,16,72000000000,8,false,Synthetic demo snapshot,DEMO
+SIMT,Bridge Retail,18.20,-16.5,1.4,-8,-2.2,3.1,47,4200000000,-22,true,Synthetic demo snapshot,DEMO
+SIME,Orbit Materials,33.10,6.4,1.5,22,-0.5,0.8,49,1700000000,19,false,Synthetic demo snapshot,DEMO

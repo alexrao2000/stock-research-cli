@@ -1,0 +1,38 @@
+$ python3 stock_research_cli.py --demo
+
+STOCK RESEARCH CLI  |  READ-ONLY
+========================================================================
+DATA MODE : SYNTHETIC DEMO — all companies and metrics are fictional
+TRADING   : DISABLED — no broker connection or order execution
+SCOPE     : research signals depend only on supplied snapshot values
+
+PORTFOLIO
+TICKER       SHARES        PRICE         VALUE    WEIGHT          P/L
+SIMX          10.00       $52.40       $524.00    +16.9%       $64.00
+SIMS          25.00       $74.30     $1,857.50    +59.7%      $107.50
+SIMT          40.00       $18.20       $728.00    +23.4%     -$632.00
+Estimated value of priced holdings: $3,109.50
+
+WATCHLIST
+SIME            $33.10   emerging materials screen
+SIMX            $52.40   compare with current holding
+
+POPULAR / EMERGING-GROWTH SCREEN
+Rule: attention proxy (20d momentum + relative volume) ≥65 plus revenue growth ≥15%.
+It is not a broad popularity measure or proof of business quality.
+SIMX    Apex Robotics          attention   78/100  rev  +28.0%  90d vol  +43.0%
+SIME    Orbit Materials        attention   67/100  rev  +22.0%  90d vol  +49.0%  HIGH VOLATILITY
+
+ESTABLISHED / LOWER-VOLATILITY SCREEN
+Rule: cap ≥$10B, 90d volatility ≤25%, positive FCF yield, net debt/EBITDA ≤2.0.
+A relative screen only; individual stocks can lose value.
+SIMS    Cedar Systems          90d vol  +16.0%  FCF yield   +4.6%  debt/EBITDA   0.6
+
+CONDITIONAL OPPORTUNITY REVIEW
+SIMX    BUY REVIEW     Growth, cash-flow, and upside inputs meet the demo's review thresholds.
+SIMS    HOLD / WATCH   Inputs do not meet the demo's buy or sell review thresholds.
+SIMT    SELL REVIEW    Snapshot flags thesis risk; review the evidence and position size.
+SIME    HOLD / WATCH   Inputs do not meet the demo's buy or sell review thresholds.
+
+These are transparent research flags, not personalized instructions to trade.
+The CLI never submits orders. Confirm sources, dates, assumptions, taxes, and risk tolerance independently.
