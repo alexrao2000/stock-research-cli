@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import ssl
 import tempfile
 import urllib.error
 import urllib.request
@@ -20,6 +21,15 @@ HOST = "127.0.0.1"
 PORT = 8765
 OPENAI_URL = "https://api.openai.com/v1/responses"
 DEFAULT_OPENAI_MODEL = "gpt-5.5"
+
+
+def openai_ssl_context() -> ssl.SSLContext | None:
+    """Use certifi's public CA bundle when installed; retain Python's normal TLS checks."""
+    try:
+        import certifi
+    except ImportError:
+        return None
+    return ssl.create_default_context(cafile=certifi.where())
 
 
 def load_local_env() -> None:
@@ -90,7 +100,7 @@ def make_ai_brief(research: dict[str, Any]) -> str:
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=45) as response:
+        with urllib.request.urlopen(request, timeout=45, context=openai_ssl_context()) as response:
             result = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
         if exc.code in (401, 403):
